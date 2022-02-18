@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
 const width = 8;
@@ -65,6 +66,23 @@ const App = () => {
     }
   }
 
+  const MoveIntoSquareBelow = () => {
+    for (let cellIdx = 0; cellIdx < 64 - width; cellIdx++) {
+      const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
+      const isFirstRow = firstRow.includes(cellIdx);
+
+      if (isFirstRow && currentColorArrangement[cellIdx] === 'black') {
+        let randomColor = Math.floor(Math.random() * candyColors.length);
+        currentColorArrangement[cellIdx] = candyColors[randomColor];
+      }
+
+      if (currentColorArrangement[cellIdx + width] === 'black') {
+        currentColorArrangement[cellIdx + width] = currentColorArrangement[cellIdx];
+        currentColorArrangement[cellIdx] = 'black';
+      }
+    }
+  }
+
   const createBoard = () => {
     const randomColorArrangement = [];
     for (let boardIdx = 0; boardIdx < width * width; boardIdx++) {
@@ -86,6 +104,8 @@ const App = () => {
       checkForColumnOfThree();
       checkForRowOfThree();
 
+      MoveIntoSquareBelow();
+
       setCurrentColorArrangement([...currentColorArrangement]);
     }, 100);
 
@@ -95,6 +115,7 @@ const App = () => {
     checkForRowOfFour,
     checkForColumnOfThree,
     checkForRowOfThree,
+    MoveIntoSquareBelow,
     currentColorArrangement
   ]);
 
