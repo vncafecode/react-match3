@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
+import ScoreBoard from "./component/ScoreBoard";
 
 const width = 8;
 const blank = 'https://github.com/kubowania/candy-crush-reactjs/blob/main/src/images/blank.png?raw=true';
@@ -15,14 +16,17 @@ const App = () => {
   const [currentColorArrangement, setCurrentColorArrangement] = useState([]);
   const [squareBeingDragged, setSquareBeingDragged] = useState(null);
   const [squareBeingReplaced, setSquareBeingReplaced] = useState(null);
+  const [scoreDisplay, setScoreDisplay] = useState(0);
 
   // Columns
   const checkForColumnOfFour = () => {
     for (let cellIdx = 0; cellIdx <= 39; cellIdx++) {
       const columnOfFour = [cellIdx, cellIdx + width, cellIdx + 2 * width, cellIdx + 3 * width];
       const decidedColor = currentColorArrangement[cellIdx];
+      const isBlank = currentColorArrangement[cellIdx] === blank;
 
-      if (columnOfFour.every(cell => currentColorArrangement[cell] === decidedColor)) {
+      if (columnOfFour.every(cell => currentColorArrangement[cell] === decidedColor) && !isBlank) {
+        setScoreDisplay(score => score + 4);
         columnOfFour.forEach(cell => currentColorArrangement[cell] = blank);
         return true;
       }
@@ -33,8 +37,10 @@ const App = () => {
     for (let cellIdx = 0; cellIdx <= 47; cellIdx++) {
       const columnOfThree = [cellIdx, cellIdx + width, cellIdx + 2 * width];
       const decidedColor = currentColorArrangement[cellIdx];
+      const isBlank = currentColorArrangement[cellIdx] === blank;
 
-      if (columnOfThree.every(cell => currentColorArrangement[cell] === decidedColor)) {
+      if (columnOfThree.every(cell => currentColorArrangement[cell] === decidedColor) && !isBlank) {
+        setScoreDisplay(score => score + 3);
         columnOfThree.forEach(cell => currentColorArrangement[cell] = blank);
         return true;
       }
@@ -47,10 +53,12 @@ const App = () => {
       const rowOfFour = [cellIdx, cellIdx + 1, cellIdx + 2, cellIdx + 3];
       const decidedColor = currentColorArrangement[cellIdx];
       const notValid = [5, 6, 7, 13, 14, 15, 21, 22, 23, 29, 30, 31, 37, 38, 39, 45, 46, 47, 53, 54, 55, 61, 62, 63];
+      const isBlank = currentColorArrangement[cellIdx] === blank;
 
       if (notValid.includes(cellIdx)) continue;
 
-      if (rowOfFour.every(cell => currentColorArrangement[cell] === decidedColor)) {
+      if (rowOfFour.every(cell => currentColorArrangement[cell] === decidedColor) && !isBlank) {
+        setScoreDisplay(score => score + 4);
         rowOfFour.forEach(cell => currentColorArrangement[cell] = blank);
         return true;
       }
@@ -62,10 +70,12 @@ const App = () => {
       const rowOfThree = [cellIdx, cellIdx + 1, cellIdx + 2];
       const decidedColor = currentColorArrangement[cellIdx];
       const notValid = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63];
+      const isBlank = currentColorArrangement[cellIdx] === blank;
 
       if (notValid.includes(cellIdx)) continue;
 
-      if (rowOfThree.every(cell => currentColorArrangement[cell] === decidedColor)) {
+      if (rowOfThree.every(cell => currentColorArrangement[cell] === decidedColor) && !isBlank) {
+        setScoreDisplay(score => score + 3);
         rowOfThree.forEach(cell => currentColorArrangement[cell] = blank);
         return true;
       }
@@ -188,6 +198,8 @@ const App = () => {
           })
         }
       </div>
+
+      <ScoreBoard score={scoreDisplay} />
     </div>
   );
 }
